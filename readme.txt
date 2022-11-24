@@ -4,7 +4,7 @@ Tags: Hide editor, Remove Editor, Remove post support
 Requires at least: 4.1
 Tested up to: 6.1.1
 Requires PHP: 5.6
-Stable tag: trunk
+Stable tag: 1.0.0
 License: GPL v2
 License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 
