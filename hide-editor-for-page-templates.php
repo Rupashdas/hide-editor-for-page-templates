@@ -141,11 +141,13 @@ class HideEditor {
             $disabled_IDs = array();
 			if(isset($this->hide_editor_options['page_templates']) && count($this->hide_editor_options['page_templates'])>0){
 				foreach($this->hide_editor_options['page_templates'] as $hide_editor_page_template){
-					// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key, WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- Admin-only lookup limited to the small number of templates selected in the plugin's own settings, not a user-facing hot path.
+					// Admin-only lookup limited to the small number of templates selected in the plugin's own settings, not a user-facing hot path.
+					// phpcs:disable WordPress.DB.SlowDBQuery.slow_db_query_meta_key, WordPress.DB.SlowDBQuery.slow_db_query_meta_value
 					$pages = get_pages( array(
 						'meta_key' => '_wp_page_template',
 						'meta_value' => $hide_editor_page_template,
 					) );
+					// phpcs:enable WordPress.DB.SlowDBQuery.slow_db_query_meta_key, WordPress.DB.SlowDBQuery.slow_db_query_meta_value
 					foreach($pages as $page){
 						$pageId = $page->ID;
 						array_push($disabled_IDs, $pageId);
