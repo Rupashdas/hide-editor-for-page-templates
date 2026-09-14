@@ -7,7 +7,7 @@ Version: 1.1.0
 Author: Devrupash
 Author URI: https://devrupash.com
 License: GPLv2 or later
-Text Domain: hide_editor
+Text Domain: hide-editor-for-page-templates
 */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -27,7 +27,7 @@ class HideEditor {
         $this->hide_editor_options = get_option( 'hide_editor_page_templates' );
 	}
     public function hide_editor_settings_link($links){
-        $hide_editor_new_link = sprintf("<a href='%s'>%s</a>", "options-general.php?page=hide-editor", __("Settings", "hide_editor" ));
+        $hide_editor_new_link = sprintf("<a href='%s'>%s</a>", "options-general.php?page=hide-editor", __("Settings", "hide-editor-for-page-templates" ));
         $links[] = $hide_editor_new_link;
         return $links;
     }
@@ -41,8 +41,8 @@ class HideEditor {
     }
 	public function hide_editor_add_plugin_page() {
         add_options_page(
-            __("Hide Editor", 'hide_editor'),
-			__("Hide Editor", 'hide_editor'),
+            __("Hide Editor", 'hide-editor-for-page-templates'),
+			__("Hide Editor", 'hide-editor-for-page-templates'),
 			'manage_options',
 			'hide-editor',
 			array( $this, 'hide_editor_create_admin_page' )
@@ -68,20 +68,20 @@ class HideEditor {
 		);
 		add_settings_section(
 			'hide_editor_setting_section',
-			__("Settings", 'hide_editor'),
+			__("Settings", 'hide-editor-for-page-templates'),
 			array( $this, 'hide_editor_section_info' ),
 			'hide-editor-admin'
 		);
         add_settings_field(
 			'page_templates',
-			__('Select page Template', 'hide_editor'),
+			__('Select page Template', 'hide-editor-for-page-templates'),
 			array( $this, 'page_templates_select' ),
 			'hide-editor-admin',
 			'hide_editor_setting_section'
 		);
         add_settings_field(
             'user_roles',
-            __('Restrict to User Roles', 'hide_editor'),
+            __('Restrict to User Roles', 'hide-editor-for-page-templates'),
             array( $this, 'user_roles_select' ),
             'hide-editor-admin',
             'hide_editor_setting_section'
@@ -113,7 +113,7 @@ class HideEditor {
             <?php endforeach; ?>
 		</select> <?php
         else:
-            _e("There is no page template in the current theme", "hide_editor");
+            esc_html_e( "There is no page template in the current theme", "hide-editor-for-page-templates" );
         endif;
 	}
 
@@ -127,7 +127,7 @@ class HideEditor {
                 <option value="<?php echo esc_attr( $role_slug ); ?>" <?php echo esc_attr( $selected ); ?>><?php echo esc_html( translate_user_role( $role_info['name'] ) ); ?></option>
             <?php endforeach; ?>
         </select>
-        <p class="description"><?php _e( 'Leave empty to hide the editor for all users. Select one or more roles to only hide it for those roles.', 'hide_editor' ); ?></p>
+        <p class="description"><?php esc_html_e( 'Leave empty to hide the editor for all users. Select one or more roles to only hide it for those roles.', 'hide-editor-for-page-templates' ); ?></p>
         <?php
     }
 
@@ -135,11 +135,13 @@ class HideEditor {
         return wp_get_theme()->get_page_templates( null, 'page');
     }
     function hide_editor_hide_editor() {
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only: only used to look up the current post ID for a display decision, no data is written.
         $page_id = isset( $_GET['post'] ) ? absint( $_GET['post'] ) : 0;
         if ( $page_id ) {
             $disabled_IDs = array();
 			if(isset($this->hide_editor_options['page_templates']) && count($this->hide_editor_options['page_templates'])>0){
 				foreach($this->hide_editor_options['page_templates'] as $hide_editor_page_template){
+					// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key, WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- Admin-only lookup limited to the small number of templates selected in the plugin's own settings, not a user-facing hot path.
 					$pages = get_pages( array(
 						'meta_key' => '_wp_page_template',
 						'meta_value' => $hide_editor_page_template,

@@ -1,8 +1,8 @@
-=== Hide Editor for Page Templates ===
+=== Hide Editor For Page Templates ===
 Contributors: rupash
 Tags: Hide editor, Remove Editor, Remove post support, page templates, user roles
 Requires at least: 4.7
-Tested up to: 6.6
+Tested up to: 7.1
 Requires PHP: 5.6
 Stable tag: 1.1.0
 License: GPL v2
@@ -28,6 +28,7 @@ A: Yes. On the Hide Editor settings page, use the "Restrict to User Roles" field
 * Fix: script cache-busting used `time()`, forcing a fresh download of plugin JS on every page load.
 * Fix: removed the discouraged `load_plugin_textdomain()` call and the `Domain Path` header pointing at a nonexistent `languages/` folder - WordPress.org has auto-loaded plugin translations since 4.6.
 * Fix: post ID from the URL is now read with `absint()` instead of a `sanitize_text_field()`/`esc_html()` combination meant for output escaping, not input handling.
+* Fix: text domain didn't match the plugin slug (`hide_editor` vs `hide-editor-for-page-templates`), and two strings were printed with `_e()` instead of an escaping variant.
 * Housekeeping: plugin options are now removed on uninstall.
 
 = 1.0.0 =
